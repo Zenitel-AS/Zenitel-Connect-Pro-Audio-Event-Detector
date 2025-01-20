@@ -1,0 +1,1037 @@
+[
+    {
+        "id": "fb94b3cb6f4acc8a",
+        "type": "tab",
+        "label": "Audio Event Detector",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8a41c0fa341a7889",
+        "type": "wamp in",
+        "z": "fb94b3cb6f4acc8a",
+        "role": "subscriber",
+        "router": "0da727c664b1f238",
+        "topic": "com.zenitel.public.audio_analytics",
+        "name": "Audio Analytics",
+        "x": 140,
+        "y": 340,
+        "wires": [
+            [
+                "071bbd6f6ef33da2",
+                "fd3923945337f01d",
+                "174213f3b9cfa04a"
+            ]
+        ]
+    },
+    {
+        "id": "ce417693571e3eca",
+        "type": "wamp in",
+        "z": "fb94b3cb6f4acc8a",
+        "role": "subscriber",
+        "router": "0da727c664b1f238",
+        "topic": "com.zenitel.public.audio_data_receiving",
+        "name": "Audio Data Recieving",
+        "x": 160,
+        "y": 60,
+        "wires": [
+            [
+                "b5feee54a91ac3e9"
+            ]
+        ]
+    },
+    {
+        "id": "e90129113ae68b72",
+        "type": "wamp in",
+        "z": "fb94b3cb6f4acc8a",
+        "role": "subscriber",
+        "router": "0da727c664b1f238",
+        "topic": "com.zenitel.public.audio_detector_alive",
+        "name": "Audio Detector Alive",
+        "x": 150,
+        "y": 120,
+        "wires": [
+            [
+                "8e21b60c70e837dd"
+            ]
+        ]
+    },
+    {
+        "id": "071bbd6f6ef33da2",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Extract payload",
+        "func": "// Extract the payload from the incoming message\nvar payload = msg.payload;\n\n// Check if payload has the desired properties\nif (payload && payload.args && payload.args.length > 0) {\n    // Get the first element in the args array\n    var json = payload.args[0];\n\n    // Set the msg.payload to the extracted JSON\n    msg.payload = json;\n} else {\n    // If payload is not in expected format, set msg.payload to an error message\n    msg.payload = { error: \"Unexpected payload format\" };\n}\n\n\n// Return the message with the updated payload\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8e21b60c70e837dd",
+        "type": "ui-template",
+        "z": "fb94b3cb6f4acc8a",
+        "group": "3c2c3716da916206",
+        "page": "",
+        "ui": "",
+        "name": "Audio Detector Alive",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n    <div style=\"font-family: Arial, sans-serif; margin: 10px; border: 1px solid #ccc; border-radius: 5px; padding: 15px; background-color: #f9f9f9;\">\n        <h3 style=\"color: #333;\">Detector Alive</h3>\n        <h4 style=\"color: #333;\">Topic: {{ msg.topic }}</h4>\n        <div style=\"background-color: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 5px;\">\n            <h4 style=\"color: #555;\">Arguments:</h4>\n            <ul style=\"list-style-type: none; padding: 0;\">\n                <li><strong>UTC Time:</strong> {{ msg.payload.args[0].UCT_time }}</li>\n                <li><strong>From Directory Number:</strong> {{ msg.payload.args[0].from_dirno }}</li>\n                <li><strong>From Name:</strong> {{ msg.payload.args[0].from_name }}</li>\n            </ul>\n        </div>\n    </div>\n</template>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 460,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fd3923945337f01d",
+        "type": "ui-template",
+        "z": "fb94b3cb6f4acc8a",
+        "group": "3c2c3716da916206",
+        "page": "",
+        "ui": "",
+        "name": "Audio Event Detected",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n    <div style=\"font-family: Arial, sans-serif; margin: 10px; border: 1px solid #ccc; border-radius: 5px; padding: 15px; background-color: #f9f9f9;\">\n        <h3 style=\"color: #333;\">Last Event Detected</h3>\n        <h4 style=\"color: #333;\">Topic: {{ msg.topic }}</h4>\n        <div style=\"background-color: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 5px;\">\n            <h4 style=\"color: #555;\">Arguments:</h4>\n            <ul style=\"list-style-type: none; padding: 0;\">\n                <li><strong>UTC Time:</strong> {{ msg.payload.args[0].UCT_time }}</li>\n                <li><strong>Audio Event:</strong> {{ msg.payload.args[0].audio_event }}</li>\n                <li><strong>From Directory Number:</strong> {{ msg.payload.args[0].from_dirno }}</li>\n                <li><strong>From Name:</strong> {{ msg.payload.args[0].from_name }}</li>\n                <li><strong>Probability:</strong> {{ msg.payload.args[0].probability }}</li>\n            </ul>\n        </div>\n    </div>\n</template>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 400,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b2a7c93e5ff6a813",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Data input for gunshot",
+        "func": "// Raw data input\nconst rawData = msg\n\n// Extracting the probability value from the raw data\nconst probability = parseFloat(rawData.payload.args[0].probability) || 0; // Fallback to 0 if undefined\n\n// Converting the probability to a percentage (0 to 100 scale)\nconst probabilityPercent = probability * 100;\n\n// Round to the nearest whole number\nconst roundedProbability = Math.round(probabilityPercent);\n\nmsg.payload = roundedProbability;\n// Return the single value for the gauge\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 440,
+        "wires": [
+            [
+                "ce479b4c4dc666d7",
+                "42e673f126afab1d",
+                "e6460acc1c608301"
+            ]
+        ]
+    },
+    {
+        "id": "ce479b4c4dc666d7",
+        "type": "ui-gauge",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Probability Gauge gunshot",
+        "group": "d8e6e817dc44dcc7",
+        "order": 1,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Gunshot",
+        "units": "units",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c"
+            },
+            {
+                "from": "50",
+                "color": "#ffc800"
+            },
+            {
+                "from": "80",
+                "color": "#ea5353"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 1060,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "174213f3b9cfa04a",
+        "type": "switch",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "",
+        "property": "msg.payload.args[0].audio_event",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "GunShot",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "GlassBreak",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Aggression",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "SmokeAlarm",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 230,
+        "y": 500,
+        "wires": [
+            [
+                "b2a7c93e5ff6a813",
+                "51169a4cb94a9fa1"
+            ],
+            [
+                "47c19469fdb9d26c",
+                "d5f84fccaeccb876"
+            ],
+            [
+                "175fde57602cec8e",
+                "8f6ca996577ffeb6"
+            ],
+            [
+                "b56fedbed5d3fd57",
+                "ee41565f7ee0bbdf"
+            ]
+        ]
+    },
+    {
+        "id": "47c19469fdb9d26c",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Data input for glass break",
+        "func": "// Raw data input\nconst rawData = msg\n\n// Extracting the probability value from the raw data\nconst probability = parseFloat(rawData.payload.args[0].probability) || 0; // Fallback to 0 if undefined\n\n// Converting the probability to a percentage (0 to 100 scale)\nconst probabilityPercent = probability * 100;\n\n// Round to the nearest whole number\nconst roundedProbability = Math.round(probabilityPercent);\n\nmsg.payload = roundedProbability;\n// Return the single value for the gauge\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 480,
+        "wires": [
+            [
+                "e6315c9807e9a6bb",
+                "d95e9ff934eede6c",
+                "e6460acc1c608301"
+            ]
+        ]
+    },
+    {
+        "id": "e6315c9807e9a6bb",
+        "type": "ui-gauge",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Probability Gauge glass break",
+        "group": "d8e6e817dc44dcc7",
+        "order": 3,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Glass break",
+        "units": "units",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c"
+            },
+            {
+                "from": "50",
+                "color": "#ffc800"
+            },
+            {
+                "from": "80",
+                "color": "#ea5353"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 1070,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "175fde57602cec8e",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Data input for aggression",
+        "func": "// Raw data input\nconst rawData = msg\n\n// Extracting the probability value from the raw data\nconst probability = parseFloat(rawData.payload.args[0].probability) || 0; // Fallback to 0 if undefined\n\n// Converting the probability to a percentage (0 to 100 scale)\nconst probabilityPercent = probability * 100;\n\n// Round to the nearest whole number\nconst roundedProbability = Math.round(probabilityPercent);\n\nmsg.payload = roundedProbability;\n// Return the single value for the gauge\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 520,
+        "wires": [
+            [
+                "427356c9922bd977",
+                "2f14505874e9d5b5",
+                "e6460acc1c608301"
+            ]
+        ]
+    },
+    {
+        "id": "427356c9922bd977",
+        "type": "ui-gauge",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Probability Gauge aggression",
+        "group": "d8e6e817dc44dcc7",
+        "order": 4,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Aggression",
+        "units": "units",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c"
+            },
+            {
+                "from": "50",
+                "color": "#ffc800"
+            },
+            {
+                "from": "80",
+                "color": "#ea5353"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 1070,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "b56fedbed5d3fd57",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Data input for fire alarm",
+        "func": "// Raw data input\nconst rawData = msg\n\n// Extracting the probability value from the raw data\nconst probability = parseFloat(rawData.payload.args[0].probability) || 0; // Fallback to 0 if undefined\n\n// Converting the probability to a percentage (0 to 100 scale)\nconst probabilityPercent = probability * 100;\n\n// Round to the nearest whole number\nconst roundedProbability = Math.round(probabilityPercent);\n\nmsg.payload = roundedProbability;\n// Return the single value for the gauge\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 560,
+        "wires": [
+            [
+                "3180cac340c4a006",
+                "cb5ebc8843e26a61",
+                "e6460acc1c608301"
+            ]
+        ]
+    },
+    {
+        "id": "3180cac340c4a006",
+        "type": "ui-gauge",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Probability Gauge fire alarm",
+        "group": "d8e6e817dc44dcc7",
+        "order": 2,
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Smoke Alarm",
+        "units": "units",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c"
+            },
+            {
+                "from": "50",
+                "color": "#ffc800"
+            },
+            {
+                "from": "80",
+                "color": "#ea5353"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 1080,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "b5feee54a91ac3e9",
+        "type": "ui-template",
+        "z": "fb94b3cb6f4acc8a",
+        "group": "3c2c3716da916206",
+        "page": "",
+        "ui": "",
+        "name": "Audio Data Receaving",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n    <div style=\"font-family: Arial, sans-serif; margin: 10px; border: 1px solid #ccc; border-radius: 5px; padding: 15px; background-color: #f9f9f9;\">\n        <h3 style=\"color: #333;\">Data receaving</h3>\n        <h4 style=\"color: #333;\">Topic: {{ msg.topic }}</h4>\n        <div style=\"background-color: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 5px;\">\n            <h4 style=\"color: #555;\">Arguments:</h4>\n            <ul style=\"list-style-type: none; padding: 0;\">\n                <li><strong>UTC Time:</strong> {{ msg.payload.args[0].UCT_time }}</li>\n                <li><strong>From Directory Number:</strong> {{ msg.payload.args[0].from_dirno }}</li>\n                <li><strong>From Name:</strong> {{ msg.payload.args[0].from_name }}</li>\n            </ul>\n        </div>\n    </div>\n</template>\n",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 460,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "08c41684cfb4a006",
+        "type": "wamp call",
+        "z": "fb94b3cb6f4acc8a",
+        "router": "0da727c664b1f238",
+        "procedure": "com.zenitel.calls.post",
+        "name": "Post Call",
+        "x": 1440,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "42e673f126afab1d",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Gunshot handler",
+        "func": "let groupDirno = flow.get('groupDirno');\n    // Create the setup call payload\n    const setupPayload = {\n        topic: 'com.zenitel.calls.post',\n        payload: {\n            'from_dirno': '2001', // Replace with your source device dirno\n            'to_dirno': '700',   // Target device dirno\n            'action': 'setup',\n            'verbose': true\n        }\n    };\n\n    // Send the setup call payload\n    node.send({ payload: setupPayload });\n\n\n// Return null to prevent immediate output of the function node\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 260,
+        "wires": [
+            [
+                "e1a98ca944c6d37a"
+            ]
+        ]
+    },
+    {
+        "id": "e1a98ca944c6d37a",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Extract Payload",
+        "func": "\nreturn msg.payload;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 340,
+        "wires": [
+            [
+                "08c41684cfb4a006"
+            ]
+        ]
+    },
+    {
+        "id": "d95e9ff934eede6c",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Glass break handler",
+        "func": "let groupDirno = flow.get('groupDirno');\n// Create the setup call payload\nconst setupPayload = {\n    topic: 'com.zenitel.calls.post',\n    payload: {\n        'from_dirno': '2002', // Replace with your source device dirno\n        'to_dirno': '703',   // Target device dirno\n        'action': 'setup',\n        'verbose': true\n    }\n};\n\n// Send the setup call payload\nnode.send({ payload: setupPayload });\n\n\n// Return null to prevent immediate output of the function node\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 300,
+        "wires": [
+            [
+                "e1a98ca944c6d37a"
+            ]
+        ]
+    },
+    {
+        "id": "2f14505874e9d5b5",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Aggression handler",
+        "func": "let groupDirno = flow.get('groupDirno');\n    // Create the setup call payload\n    const setupPayload = {\n        topic: 'com.zenitel.calls.post',\n        payload: {\n            'from_dirno': '2002', // Replace with your source device dirno\n            'to_dirno': '701',   // Target device dirno\n            'action': 'setup',\n            'verbose': true\n        }\n    };\n\n    // Send the setup call payload\n    node.send({ payload: setupPayload });\n\n\n// Return null to prevent immediate output of the function node\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 340,
+        "wires": [
+            [
+                "e1a98ca944c6d37a"
+            ]
+        ]
+    },
+    {
+        "id": "cb5ebc8843e26a61",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Fire alarm handler",
+        "func": "let groupDirno = flow.get('groupDirno');\n// Create the setup call payload\nconst setupPayload = {\n    topic: 'com.zenitel.calls.post',\n    payload: {\n        'from_dirno': '2002', // Replace with your source device dirno\n        'to_dirno': '702',   // Target device dirno\n        'action': 'setup',\n        'verbose': true\n    }\n};\n\n// Send the setup call payload\nnode.send({ payload: setupPayload });\n\n\n// Return null to prevent immediate output of the function node\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 380,
+        "wires": [
+            [
+                "e1a98ca944c6d37a"
+            ]
+        ]
+    },
+    {
+        "id": "92052da7bf365f73",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Calculate lenght of gunshot warning",
+        "func": "let messages = msg.payload.audio_messages;\n\nif (messages) {\n    // Find the directory with directoryNumber \"700\"\n    let directory700 = messages.find(d => d.dirno === \"700\");\n\n    if (directory700) {\n        // If found, set msg.payload to just the duration\n        msg.payload = directory700.duration;\n        msg.delay=directory700.duration;\n    } else {\n        // If directory number 700 not found\n        msg.payload = { error: \"Directory number 700 not found\" };\n    }\n} else {\n    // If \"directories\" is not found in the response\n    msg.payload = { error: \"'directories' array not found\" };\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 700,
+        "wires": [
+            [
+                "503dd5a095844083"
+            ]
+        ]
+    },
+    {
+        "id": "d5f84fccaeccb876",
+        "type": "wamp call",
+        "z": "fb94b3cb6f4acc8a",
+        "router": "0da727c664b1f238",
+        "procedure": "com.zenitel.system.audio_messages",
+        "name": "",
+        "x": 390,
+        "y": 760,
+        "wires": [
+            [
+                "36c9a6068398d7b1"
+            ]
+        ]
+    },
+    {
+        "id": "2843b60a3587939d",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Calculate lenght of aggression warning",
+        "func": "let messages = msg.payload.audio_messages;\n\nif (messages) {\n    // Find the directory with directoryNumber \"701\"\n    let directory701 = messages.find(d => d.dirno === \"701\");\n\n    if (directory701) {\n        // If found, set msg.payload to just the duration\n        msg.payload = directory701.duration;\n        msg.delay = directory701.duration;\n    } else {\n        // If directory number 701 not found\n        msg.payload = { error: \"Directory number 701 not found\" };\n    }\n} else {\n    // If \"directories\" is not found in the response\n    msg.payload = { error: \"'directories' array not found\" };\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 820,
+        "wires": [
+            [
+                "5738e1dca58bd627"
+            ]
+        ]
+    },
+    {
+        "id": "ee41565f7ee0bbdf",
+        "type": "wamp call",
+        "z": "fb94b3cb6f4acc8a",
+        "router": "0da727c664b1f238",
+        "procedure": "com.zenitel.system.audio_messages",
+        "name": "",
+        "x": 390,
+        "y": 880,
+        "wires": [
+            [
+                "84968fcabd58ec21"
+            ]
+        ]
+    },
+    {
+        "id": "8f6ca996577ffeb6",
+        "type": "wamp call",
+        "z": "fb94b3cb6f4acc8a",
+        "router": "0da727c664b1f238",
+        "procedure": "com.zenitel.system.audio_messages",
+        "name": "",
+        "x": 390,
+        "y": 820,
+        "wires": [
+            [
+                "2843b60a3587939d"
+            ]
+        ]
+    },
+    {
+        "id": "51169a4cb94a9fa1",
+        "type": "wamp call",
+        "z": "fb94b3cb6f4acc8a",
+        "router": "0da727c664b1f238",
+        "procedure": "com.zenitel.system.audio_messages",
+        "name": "",
+        "x": 390,
+        "y": 700,
+        "wires": [
+            [
+                "92052da7bf365f73"
+            ]
+        ]
+    },
+    {
+        "id": "84968fcabd58ec21",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Calculate lenght of fire warning",
+        "func": "let messages = msg.payload.audio_messages;\n\nif (messages) {\n    // Find the directory with directoryNumber \"702\"\n    let directory702 = messages.find(d => d.dirno === \"702\");\n\n    if (directory702) {\n        // If found, set msg.payload to just the duration\n        msg.payload = directory702.duration;\n        msg.delay=directory702.duration;\n    } else {\n        // If directory number 702 not found\n        msg.payload = { error: \"Directory number 702 not found\" };\n    }\n} else {\n    // If \"directories\" is not found in the response\n    msg.payload = { error: \"'directories' array not found\" };\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 880,
+        "wires": [
+            [
+                "bf89d6d701298588"
+            ]
+        ]
+    },
+    {
+        "id": "36c9a6068398d7b1",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Calculate lenght of glass break warning",
+        "func": "let messages = msg.payload.audio_messages;\n\nif (messages) {\n    // Find the directory with directoryNumber \"703\"\n    let directory703 = messages.find(d => d.dirno === \"703\");\n\n    if (directory703) {\n        // If found, set msg.payload to just the duration\n        msg.payload = directory703.duration;\n        msg.delay = directory703.duration;\n    } else {\n        // If directory number 703 not found\n        msg.payload = { error: \"Directory number 703 not found\" };\n    }\n} else {\n    // If \"directories\" is not found in the response\n    msg.payload = { error: \"'directories' array not found\" };\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 760,
+        "wires": [
+            [
+                "a43bf464fdd0e0c8"
+            ]
+        ]
+    },
+    {
+        "id": "503dd5a095844083",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Emergency call",
+        "func": "// Extract the payload\nconst v = msg.payload;\n\n// Initialize variables\n\nlet intercom_number = \"2002\";\nlet operator_number = \"2001\";\n\n\n\n    // Create the message payload for the setup action\n    msg = {\n        topic: 'com.zenitel.calls.post',\n        payload: {\n            'from_dirno': intercom_number,\n            'to_dirno': operator_number,\n            'action': 'setup',\n            'verbose': false\n        }\n    };\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 700,
+        "wires": [
+            [
+                "e687b8c0515dfae2"
+            ]
+        ]
+    },
+    {
+        "id": "60e02ef6541a52f4",
+        "type": "wamp call",
+        "z": "fb94b3cb6f4acc8a",
+        "router": "0da727c664b1f238",
+        "procedure": "com.zenitel.calls.post",
+        "name": "",
+        "x": 1720,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e687b8c0515dfae2",
+        "type": "delay",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Gun warning delay",
+        "pauseType": "delayv",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1370,
+        "y": 700,
+        "wires": [
+            [
+                "60e02ef6541a52f4"
+            ]
+        ]
+    },
+    {
+        "id": "a43bf464fdd0e0c8",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Emergency call",
+        "func": "// Extract the payload\nconst v = msg.payload;\n\n// Initialize variables\n\nlet intercom_number = \"2002\";\nlet operator_number = \"2001\";\n\n\n\n    // Create the message payload for the setup action\n    msg = {\n        topic: 'com.zenitel.calls.post',\n        payload: {\n            'from_dirno': intercom_number,\n            'to_dirno': operator_number,\n            'action': 'setup',\n            'verbose': false\n        }\n    };\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 760,
+        "wires": [
+            [
+                "5f7d8a526ea2eebc"
+            ]
+        ]
+    },
+    {
+        "id": "5738e1dca58bd627",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Emergency call",
+        "func": "// Extract the payload\nconst v = msg.payload;\n\n// Initialize variables\n\nlet intercom_number = \"2002\";\nlet operator_number = \"2001\";\n\n\n\n    // Create the message payload for the setup action\n    msg = {\n        topic: 'com.zenitel.calls.post',\n        payload: {\n            'from_dirno': intercom_number,\n            'to_dirno': operator_number,\n            'action': 'setup',\n            'verbose': false\n        }\n    };\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 820,
+        "wires": [
+            [
+                "65338d1cc96bba2e"
+            ]
+        ]
+    },
+    {
+        "id": "bf89d6d701298588",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Emergency call",
+        "func": "// Extract the payload\nconst v = msg.payload;\n\n\n\nlet intercom_number = \"2002\";\nlet operator_number = \"2001\";\n\n// Check if the command is \"IF\"\n\n    // Create the message payload for the setup action\n    msg = {\n        topic: 'com.zenitel.calls.post',\n        payload: {\n            'from_dirno': intercom_number,\n            'to_dirno': operator_number,\n            'action': 'setup',\n            'verbose': false\n        }\n    };\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 880,
+        "wires": [
+            [
+                "a7469f6102ed376e"
+            ]
+        ]
+    },
+    {
+        "id": "5f7d8a526ea2eebc",
+        "type": "delay",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Glass break warning delay",
+        "pauseType": "delayv",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1400,
+        "y": 760,
+        "wires": [
+            [
+                "60e02ef6541a52f4"
+            ]
+        ]
+    },
+    {
+        "id": "65338d1cc96bba2e",
+        "type": "delay",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Aggression warning delay",
+        "pauseType": "delayv",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1390,
+        "y": 820,
+        "wires": [
+            [
+                "60e02ef6541a52f4"
+            ]
+        ]
+    },
+    {
+        "id": "a7469f6102ed376e",
+        "type": "delay",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Fire warning delay",
+        "pauseType": "delayv",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1370,
+        "y": 880,
+        "wires": [
+            [
+                "60e02ef6541a52f4"
+            ]
+        ]
+    },
+    {
+        "id": "10ca9771a9b745b5",
+        "type": "function",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Reset gauges ",
+        "func": "msg.payload = 0;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 640,
+        "wires": [
+            [
+                "ce479b4c4dc666d7",
+                "e6315c9807e9a6bb",
+                "427356c9922bd977",
+                "3180cac340c4a006"
+            ]
+        ]
+    },
+    {
+        "id": "e6460acc1c608301",
+        "type": "delay",
+        "z": "fb94b3cb6f4acc8a",
+        "name": "Gauge reset delay",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 790,
+        "y": 580,
+        "wires": [
+            [
+                "10ca9771a9b745b5"
+            ]
+        ]
+    },
+    {
+        "id": "0da727c664b1f238",
+        "type": "wamp-client",
+        "address": "",
+        "realm": "",
+        "authId": "",
+        "password": "",
+        "name": ""
+    },
+    {
+        "id": "3c2c3716da916206",
+        "type": "ui-group",
+        "name": "Audio Events",
+        "page": "b786ce9e671a39ed",
+        "width": "6",
+        "height": "1",
+        "order": 3,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "d8e6e817dc44dcc7",
+        "type": "ui-group",
+        "name": "AudioEventGaugeGroup",
+        "page": "b786ce9e671a39ed",
+        "width": "6",
+        "height": "1",
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "b786ce9e671a39ed",
+        "type": "ui-page",
+        "name": "System Test",
+        "ui": "d9f7ce25384e31ad",
+        "path": "/page3",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "0825737c1a83cac2",
+        "order": 2,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "d9f7ce25384e31ad",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "showPageTitle": true,
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "notificationDisplayTime": 5
+    },
+    {
+        "id": "0825737c1a83cac2",
+        "type": "ui-theme",
+        "name": "Dark Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#000000",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    }
+]
